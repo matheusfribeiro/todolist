@@ -1,33 +1,119 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react'
+import { BsTrash, BsBookmarkCheck, BsBookmarkCheckFill } from "react-icons/bs"
 import './App.css'
 
+const API = "http://localhost:5000"
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [title, setTitle] = useState("")
+  const [time, setTime] = useState("")
+  const [todos, setTodos] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  //load todos on page load
+  useEffect(() => {
+
+    const loadData = async () => {
+
+      setLoading(true)
+
+      const res = await fetch(API + "/todos")
+        .then((res) => res.json())
+        .then((data) => data)
+        .catch((err) => console.log(err))
+
+      setLoading(false)
+
+      setTodos(res)
+
+    }
+
+    loadData()
+
+  }, [])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    console.log(title)
+    
+
+    const todo = {
+      id: Math.random(),
+      title,
+      time,
+      done: false
+    }
+
+    await fetch(API + "/todos", {
+      method: "POST",
+      body: JSON.stringify(todo),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+
+    setTodos((prevState) => [...prevState, todo])
+
+    setTitle("")
+    setTime("")
+  }
+
+  if(loading) {
+    return <p>Loading...</p>
+  }
+ 
 
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <header className='todo-header'>
+        <h1>React Todo</h1>
+      </header>
+      <div className="form-todo">
+        <h2>Add your next task:</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="form-control">
+            <label htmlFor="title">What are you going to do?</label>
+            <input 
+              type="text" 
+              name='title' 
+              placeholder='Task Title' 
+              onChange={(e) => setTitle(e.target.value)} 
+              value={title || ""} 
+              required
+            />
+          </div>
+          <div className="form-control">
+            <label htmlFor="time">Duration:</label>
+            <input 
+              type="text" 
+              name='time' 
+              placeholder='Task time' 
+              onChange={(e) => setTime(e.target.value)} 
+              value={time || ""} 
+              required
+            />
+          </div>
+
+          <input type="submit" value="Create Task" />
+
+        </form>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      <div className="list-todo">
+        <h2>Task List</h2>
+        {todos.length === 0 && <p>There are no new tasks!</p>}
+        {todos.map((todo) => (
+          <div className="todo" key={todo.id}>
+            <h3>{todo.title}</h3>
+            <p>Duration: {todo.time}</p>
+            <div className="actions">
+              <span>
+                {!todo.done ? <BsBookmarkCheck /> : <BsBookmarkCheckFill />}
+              </span>
+            </div>
+          </div>
+        ))}
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+        
     </div>
   )
 }
