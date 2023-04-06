@@ -58,6 +58,14 @@ function App() {
     setTime("")
   }
 
+  const handleDelete = async (id) => {
+    await fetch(API + "/todos/" + id, {
+      method: "DELETE",
+    })
+
+    setTodos((prevState) => prevState.filter((todo) => todo.id !== id))
+  }
+
   if(loading) {
     return <p>Loading...</p>
   }
@@ -103,12 +111,13 @@ function App() {
         {todos.length === 0 && <p>There are no new tasks!</p>}
         {todos.map((todo) => (
           <div className="todo" key={todo.id}>
-            <h3>{todo.title}</h3>
+            <h3 className={todo.done ? "todo-done" : ""}>{todo.title}</h3>
             <p>Duration: {todo.time}</p>
             <div className="actions">
               <span>
                 {!todo.done ? <BsBookmarkCheck /> : <BsBookmarkCheckFill />}
               </span>
+              <BsTrash onClick={() => handleDelete(todo.id)} />
             </div>
           </div>
         ))}

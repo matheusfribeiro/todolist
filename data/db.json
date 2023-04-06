@@ -1,16 +1,3 @@
 {
-  "todos": [
-    {
-      "id": 0.02764448612641246,
-      "title": "study react",
-      "time": "2",
-      "done": false
-    },
-    {
-      "id": 0.8362225110920547,
-      "title": "study javascript",
-      "time": "5",
-      "done": false
-    }
-  ]
+  "todos": []
 }
