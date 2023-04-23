@@ -12,22 +12,16 @@ function App() {
 
   //load todos on page load
   useEffect(() => {
-
     const loadData = async () => {
-
       setLoading(true)
-
       const res = await fetch(API + "/todos")
         .then((res) => res.json())
         .then((data) => data)
         .catch((err) => console.log(err))
 
       setLoading(false)
-
       setTodos(res)
-
     }
-
     loadData()
 
   }, [])
@@ -35,7 +29,6 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     console.log(title)
-    
 
     const todo = {
       id: Math.random(),
@@ -84,7 +77,6 @@ function App() {
   if(loading) {
     return <p>Loading...</p>
   }
- 
 
   return (
     <div className="App">
@@ -116,9 +108,7 @@ function App() {
               required
             />
           </div>
-
           <input type="submit" value="Create Task" />
-
         </form>
       </div>
       <div className="list-todo">
